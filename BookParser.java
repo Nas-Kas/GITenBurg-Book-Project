@@ -33,19 +33,41 @@ public class BookParser{
     File file = new File("pride.txt");
     Scanner sc = new Scanner(file);
     HashMap<String, HashMap<String,Integer>> map = parseWords(file, sc); // key will be chapter value will be a map key = word, value = frequency of word
-    public BookParser() throws FileNotFoundException{}
+    HashSet<String> commonWords = new HashSet<String>();
+    public BookParser() throws FileNotFoundException{
+        File f = new File("frequentwords.txt");
+        Scanner s = new Scanner(f);
+        int count = 0;
+        while(s.hasNext() && count < 100){
+            String next = s.next();
+            commonWords.add(next);
+            count++;
+        }
+    }
 
-    public PriorityQueue<String []> fillQ(HashMap<String,Integer> map, String type){ // fills the queue according to the map of prepopulated values
+    public void fillCommonwords(){
+
+    }
+    public PriorityQueue<String []> fillQ(HashMap<String,HashMap<String,Integer>> map, String type){ // fills the queue according to the map of prepopulated values
         PriorityQueue<String[]> freqQ;
         if(type.equals("max")){
             freqQ = new PriorityQueue<String[]>(new maxHeap());;
         }else{
             freqQ = new PriorityQueue<String[]>(new minHeap());;
         }
-        
+        HashMap<String,Integer> mergedMap = new HashMap<String,Integer>();
         for(String x : map.keySet()){
-            String val = map.get(x) + "";
-            String [] temp = new String []{x, val};
+            HashMap<String,Integer> curr = map.get(x);
+            for(String y : curr.keySet()){
+                if(mergedMap.containsKey(y)){
+                    mergedMap.put(y, curr.get(y) + mergedMap.get(y));
+                }else{
+                    mergedMap.put(y,curr.get(y));
+                }
+            }
+        }
+        for(String x : mergedMap.keySet()){
+            String [] temp = new String [] {x,mergedMap.get(x) + ""};
             freqQ.add(temp);
         }
         return freqQ;
@@ -103,7 +125,7 @@ public class BookParser{
         }
         return uniques.size();
     }
-/*
+
     public String [] [] get20MostFrequentWords(){
         String [] [] res = new String [20] [2];
         PriorityQueue<String[]> freqQ = fillQ(map,"max");
@@ -116,10 +138,21 @@ public class BookParser{
     }
 
 
-    public int get20MostInterestingFrequentWords(){
-        return -1;
+    public String [] [] get20MostInterestingFrequentWords(){
+        String [] [] res = new String [20] [2];
+        PriorityQueue<String []> freqQ = fillQ(map,"max");
+        int count = 0;
+        while(count < 20){
+            String [] curr = freqQ.poll();
+            if(!commonWords.contains(curr[0])){
+                String [] temp = new String [] {curr[0],curr[1]};
+                res[count] = temp;
+                count++;
+            }
+        }
+        return res;
     }
-
+/*
     public String [] [] get20LeastFrequentWords(){
         String [] [] res = new String [20] [2];
         PriorityQueue<String[]> freqQ = fillQ(map,"min");
@@ -158,7 +191,8 @@ public class BookParser{
         BookParser b = new BookParser();
         System.out.println(b.getTotalUniqueWords());
         System.out.println(b.getTotalNumberOfWords());
-        //System.out.println(Arrays.deepToString(b.get20MostFrequentWords()));
+        System.out.println(Arrays.deepToString(b.get20MostFrequentWords()));
+        System.out.println(Arrays.deepToString(b.get20MostInterestingFrequentWords()));
         System.out.println(Arrays.toString(b.getFrequencyOfWord("the")));
         //System.out.println(Arrays.deepToString(b.get20LeastFrequentWords()));
     }
