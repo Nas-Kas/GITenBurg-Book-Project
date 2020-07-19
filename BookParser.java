@@ -94,8 +94,14 @@ public class BookParser{
     }
 
     public int getTotalUniqueWords(){
-        int sum = 0;
-        return sum;
+        HashSet<String> uniques = new HashSet<String>();
+        for(String x: map.keySet()){
+            HashMap<String,Integer> curr = map.get(x);
+            for(String y: curr.keySet()){
+                uniques.add(y);
+            }
+        }
+        return uniques.size();
     }
 /*
     public String [] [] get20MostFrequentWords(){
@@ -139,7 +145,7 @@ public class BookParser{
     */
     public static void main (String [] args) throws FileNotFoundException {
         BookParser b = new BookParser();
-        //System.out.println(b.getTotalUniqueWords());
+        System.out.println(b.getTotalUniqueWords());
         System.out.println(b.getTotalNumberOfWords());
         //System.out.println(Arrays.deepToString(b.get20MostFrequentWords()));
         //System.out.println();
