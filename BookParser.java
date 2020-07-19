@@ -130,11 +130,22 @@ public class BookParser{
         }
         return res;
     }
+*/
 
-    public int getFrequencyOfWord(){
-        return -1;
+
+    public int [] getFrequencyOfWord(String word){
+        int [] res = new int [61];
+        int count = 0;
+        for(String x : map.keySet()){
+            HashMap<String,Integer> curr = map.get(x);
+            for(String y : curr.keySet()){
+                res[count] = curr.get(word);
+            }
+            count++;
+        }
+        return res;
     }
-
+/*
     public int getChapterQuoteAppears(){
         return -1;
     }
@@ -148,7 +159,7 @@ public class BookParser{
         System.out.println(b.getTotalUniqueWords());
         System.out.println(b.getTotalNumberOfWords());
         //System.out.println(Arrays.deepToString(b.get20MostFrequentWords()));
-        //System.out.println();
+        System.out.println(Arrays.toString(b.getFrequencyOfWord("the")));
         //System.out.println(Arrays.deepToString(b.get20LeastFrequentWords()));
     }
 }
