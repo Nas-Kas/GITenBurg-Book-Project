@@ -52,35 +52,50 @@ public class BookParser{
     }
 
     public static HashMap<String, HashMap<String,Integer>> parseWords(File f, Scanner sc){
-        HashMap<String,HashMap<String,Integer>> map = new HashMap<String,Integer>();
-        int currentChapter = 0;
+        HashMap<String,HashMap<String,Integer>> map = new HashMap<String,HashMap<String,Integer>>();
+        String currentChapter = "0";
         while(sc.hasNextLine()){
             String [] curr = sc.nextLine().split(" ");
-            //curr = curr.toLowerCase();
-            //curr = curr.replaceAll("\\p{Punct}", "");
+            
             if(curr[0].equals("Chapter")){
-                HashMap<String,Integer> temp = new HashMap<String,Integer>();
-                map.put(curr[0] + curr[1],temp);
+                currentChapter = curr[1];
+                map.put(curr[0] + curr[1], new HashMap<String,Integer>());
             }
-            else{
-                HashMap<String,Integer> currMap = map.get()
+            else if(curr.length > 0 && curr != null){
+                for(int i = 0; i < curr.length; i++){
+                    String currString = curr[i];
+                    currString = currString.toLowerCase();
+                    currString = currString.replaceAll("\\p{Punct}", "");
+                    if(currString.equals("")){
+                        continue;
+                    }
+                    else if(!currString.isBlank() && currString != null  && map.get(currentChapter) != null && map.get(currentChapter).containsKey(currString)){
+                        HashMap<String,Integer> temp = map.get(currentChapter);
+                        temp.put(currString, temp.get(currString) + 1);
+                        map.put(currentChapter, temp);
+                    }else if(currString != null && !currString.isBlank()){
+                        HashMap<String,Integer> temp = new HashMap<String,Integer>();
+                        temp.put(currString,1);
+                        map.put(currentChapter,temp);
+                    }
+                }
+              }
             }
-            //if(map.containsKey(curr) && !curr.isBlank()){
-            //    map.put(curr, map.get(curr) + 1);
-            //}else if(!map.containsKey(curr) && !curr.isBlank() ){
-            //    map.put(curr, 1);
-            //}
-        }
         return map;
     }
+
     public int getTotalNumberOfWords(){
         int sum = 0;
         for(String x : map.keySet()){
-            sum += map.get(x);
+            HashMap<String,Integer> curr = map.get(x);
+            for(String y : curr.keySet()){
+                System.out.println(y + ":" + curr.get(y));
+                sum += curr.get(y);
+            }
         }
         return sum;
     }
-
+/*
     public int getTotalUniqueWords(){
         return map.size();
     }
@@ -123,12 +138,13 @@ public class BookParser{
     public int generateSentence(){
         return -1;
     }
+    */
     public static void main (String [] args) throws FileNotFoundException {
         BookParser b = new BookParser();
-        System.out.println(b.getTotalUniqueWords());
+        //System.out.println(b.getTotalUniqueWords());
         System.out.println(b.getTotalNumberOfWords());
-        System.out.println(Arrays.deepToString(b.get20MostFrequentWords()));
-        System.out.println();
-        System.out.println(Arrays.deepToString(b.get20LeastFrequentWords()));
+        //System.out.println(Arrays.deepToString(b.get20MostFrequentWords()));
+        //System.out.println();
+        //System.out.println(Arrays.deepToString(b.get20LeastFrequentWords()));
     }
 }
