@@ -56,25 +56,23 @@ public class BookParser{
         String currentChapter = "0";
         while(sc.hasNextLine()){
             String [] curr = sc.nextLine().split(" ");
-            
             if(curr[0].equals("Chapter")){
                 currentChapter = curr[1];
-                map.put(curr[0] + curr[1], new HashMap<String,Integer>());
+                map.put(curr[1], new HashMap<String,Integer>());
             }
             else if(curr.length > 0 && curr != null){
                 for(int i = 0; i < curr.length; i++){
                     String currString = curr[i];
                     currString = currString.toLowerCase();
                     currString = currString.replaceAll("\\p{Punct}", "");
-                    if(currString.equals("")){
-                        continue;
-                    }
-                    else if(!currString.isBlank() && currString != null  && map.get(currentChapter) != null && map.get(currentChapter).containsKey(currString)){
+                    
+                    if(!currString.isBlank() && map.get(currentChapter) != null && map.get(currentChapter).containsKey(currString)){
                         HashMap<String,Integer> temp = map.get(currentChapter);
+                        //System.out.println("increment");
                         temp.put(currString, temp.get(currString) + 1);
                         map.put(currentChapter, temp);
                     }else if(currString != null && !currString.isBlank()){
-                        HashMap<String,Integer> temp = new HashMap<String,Integer>();
+                        HashMap<String,Integer> temp = map.get(currentChapter);
                         temp.put(currString,1);
                         map.put(currentChapter,temp);
                     }
@@ -89,17 +87,17 @@ public class BookParser{
         for(String x : map.keySet()){
             HashMap<String,Integer> curr = map.get(x);
             for(String y : curr.keySet()){
-                System.out.println(y + ":" + curr.get(y));
                 sum += curr.get(y);
             }
         }
         return sum;
     }
-/*
-    public int getTotalUniqueWords(){
-        return map.size();
-    }
 
+    public int getTotalUniqueWords(){
+        int sum = 0;
+        return sum;
+    }
+/*
     public String [] [] get20MostFrequentWords(){
         String [] [] res = new String [20] [2];
         PriorityQueue<String[]> freqQ = fillQ(map,"max");
