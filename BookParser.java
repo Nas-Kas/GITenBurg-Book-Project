@@ -34,8 +34,10 @@ public class BookParser{
     Scanner sc = new Scanner(file);
     HashMap<String, HashMap<String,Integer>> map = parseWords(file, sc); // key will be chapter value will be a map key = word, value = frequency of word
     HashSet<String> commonWords = new HashSet<String>();
+    String chunk = "";
     public BookParser() throws FileNotFoundException{
         File f = new File("frequentwords.txt");
+        //File f2 = new File("pride.txt");
         Scanner s = new Scanner(f);
         int count = 0;
         while(s.hasNext() && count < 100){
@@ -43,6 +45,13 @@ public class BookParser{
             commonWords.add(next);
             count++;
         }
+        s.close();
+        //s = new Scanner(f2);
+        //while(s.hasNext()){
+        //    String res = s.next();
+        //    chunk += res;
+        //}
+        //s.close();
     }
 
     public void fillCommonwords(){
@@ -152,7 +161,7 @@ public class BookParser{
         }
         return res;
     }
-/*
+
     public String [] [] get20LeastFrequentWords(){
         String [] [] res = new String [20] [2];
         PriorityQueue<String[]> freqQ = fillQ(map,"min");
@@ -163,37 +172,56 @@ public class BookParser{
         }
         return res;
     }
-*/
-
 
     public int [] getFrequencyOfWord(String word){
         int [] res = new int [61];
         int count = 0;
         for(String x : map.keySet()){
             HashMap<String,Integer> curr = map.get(x);
-            for(String y : curr.keySet()){
-                res[count] = curr.get(word);
-            }
+            res[count] = curr.get(word);
             count++;
         }
         return res;
     }
-/*
-    public int getChapterQuoteAppears(){
-        return -1;
-    }
 
+    public String getChapterQuoteAppears(String quote) throws FileNotFoundException{ // ridiculously bad runtime
+        File f2 = new File("pride.txt");
+        Scanner s = new Scanner(f2);
+        while(s.hasNext()){
+            String res = s.next();
+            chunk += res;
+        }
+        s.close();
+
+        String [] chunkArr = chunk.split("Chapter");
+        quote = quote.replaceAll(" ", "");
+        String chapter = "";
+        for(int i = 0; i < chunkArr.length; i++){
+            if(chunkArr[i].contains(quote)){
+                chapter = chunkArr[i].substring(0,2);
+                if(Character.isDigit(chapter.charAt(1))){
+                    return "Chapter " + chapter;
+                }else{
+                    return "Chapter " + chapter.substring(0,1);
+                }
+            }
+        }
+        return "String does not exist";
+    }
+/*
     public int generateSentence(){
         return -1;
     }
     */
     public static void main (String [] args) throws FileNotFoundException {
         BookParser b = new BookParser();
-        System.out.println(b.getTotalUniqueWords());
-        System.out.println(b.getTotalNumberOfWords());
-        System.out.println(Arrays.deepToString(b.get20MostFrequentWords()));
-        System.out.println(Arrays.deepToString(b.get20MostInterestingFrequentWords()));
-        System.out.println(Arrays.toString(b.getFrequencyOfWord("the")));
+        //System.out.print(b.chunk);
+        //System.out.println(b.getTotalUniqueWords());
+        //System.out.println(b.getTotalNumberOfWords());
+        //System.out.println(Arrays.deepToString(b.get20MostFrequentWords()));
+        //System.out.println(Arrays.deepToString(b.get20MostInterestingFrequentWords()));
+        //System.out.println(Arrays.toString(b.getFrequencyOfWord("the")));
         //System.out.println(Arrays.deepToString(b.get20LeastFrequentWords()));
+        //System.out.println(b.getChapterQuoteAppears("But to live in ignorance on such a point was impossible; or at least it was impossible not to try for information."));
     }
 }
